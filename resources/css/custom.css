@@ -500,9 +500,23 @@ input[type="file"] {
     text-decoration: underline;
 }
 
-#loadingBot{
-    width: 50%;
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.35);
+    backdrop-filter: blur(2px);
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+#loadingVideo {
+    width: min(320px, 70vw);
     height: auto;
-    display: block;
 }
 
