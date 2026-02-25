@@ -1,5 +1,4 @@
-@php use App\Enum\AnswerLengthEnum; @endphp
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
@@ -8,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
 </head>
 <body>
 <div class="page">
@@ -50,12 +49,12 @@
                 <div>
                     <h1 class="panel-title">Upload a document to summarize</h1>
                     <p class="panel-subtitle">
-                        Drop in a PDF or text file and we’ll run OCR + AI to tell you what it’s about.
+                        Drop in a PDF or text file and we'll run OCR + AI to tell you what it's about.
                     </p>
                 </div>
                 <div class="chip">
                     <div class="chip-dot"></div>
-                    <span>Up to 5 MB</span>
+                    <span>Up to 2 MB</span>
                 </div>
             </div>
 
@@ -126,31 +125,6 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px;">
-                    <div class="pill-soft">
-                        <input type="radio" id="answer-short" name="answer_length" value="{{ AnswerLengthEnum::SHORT }}"
-                               style="margin-right: 6px;"/>
-                        <label for="answer-short">Short answer</label>
-                    </div>
-
-                    <div class="pill-soft">
-                        <input type="radio" id="answer-medium" name="answer_length" value="{{ AnswerLengthEnum::MEDIUM }}" checked
-                               style="margin-right: 6px;"/>
-                        <label for="answer-medium">Medium answer</label>
-                    </div>
-
-                    <div class="pill-soft">
-                        <input type="radio" id="answer-long" name="answer_length" value="{{ AnswerLengthEnum::LONG }}"
-                               style="margin-right: 6px;"/>
-                        <label for="answer-long">Long answer</label>
-                    </div>
-
-                    <div class="pill-soft">
-                        <input type="radio" id="answer-max" name="answer_length" value="{{ AnswerLengthEnum::MAX }}"
-                               style="margin-right: 6px;"/>
-                        <label for="answer-max">Max detail</label>
-                    </div>
-                </div>
 
 
                 <!-- Footer -->
@@ -165,7 +139,7 @@
                     <div class="status-text">
                         <span class="status-dot"></span>
                         <span>
-                            <strong>Tip:</strong> larger documents may take a few seconds while OCR runs.
+                            <strong>Tip:</strong> larger documents may take a few seconds to one minute while OCR runs.
                         </span>
                     </div>
                 </div>
@@ -233,7 +207,7 @@
     </main>
 
     <footer class="page-footer">
-        Built for OCR + OpenAI backend · Plug this view into Laravel and attach your JS logic.
+        Built for OCR + OpenAI
     </footer>
 </div>
 

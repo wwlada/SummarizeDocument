@@ -10,7 +10,8 @@ class SummarizeController extends Controller
 {
     public function summarizeDocument(SummarizeDataRequest $request, FileToTextService $fileToTextService): JsonResponse
     {
-        $text = $fileToTextService->filePath($request->validated('document'))->handleDocument();
+        $validated = $request->validated();
+        $text = $fileToTextService->filePath($validated['document'])->handleDocument();
 
         dd($text);
 

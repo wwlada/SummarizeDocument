@@ -10,11 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function summarize() {
         const url = form.dataset.summarizeUrl;
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const loadingOverlay = document.querySelector('#loadingOverlay');
         const loadingVideo = document.querySelector("#loadingVideo");
         const formData = new FormData(form);
-        // i need to check if they exist
+        if (!url || !loadingOverlay || !loadingVideo || !formData) return;
+
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        if (!token) {
+            console.error("No CSRF token found");
+            return;
+        }
 
         loadingVideo.play?.();
         loadingOverlay.classList.remove('hidden');
