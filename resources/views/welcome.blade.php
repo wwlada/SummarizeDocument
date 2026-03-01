@@ -173,31 +173,12 @@
                                 Once you upload a file and submit, this panel will show a clean
                                 <span class="highlight">AI-generated summary</span> of your document.
                             </span>
-                            <span>
-                                You can then copy the summary, store it in your DB, or display it in your app UI.
-                            </span>
                         </div>
                     </div>
 
                     <div class="summary-footer">
                         <span>Last processed: <span id="summary-updated-at">{{$lastTimeProcessed}}</span></span>
                         <span>Average response: <span id="avgResponseTimeSpan">{{$avgResponseTime}}</span> seconds.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- recent documents list -->
-            <div style="margin-top: 18px;">
-                <div class="secondary-heading">Recent documents</div>
-                <div class="summary-card" style="min-height: auto;">
-                    <div class="summary-body" id="recent-documents">
-{{--                            @foreach ($documents as $doc)--}}
-                        <div>…</div>
-{{--                            @endforeach--}}
-                        <div class="summary-placeholder">
-                            <span>No history yet.</span>
-                            <span class="highlight">After you process a document, you can list it here.</span>
-                        </div>
                     </div>
                 </div>
             </div>
