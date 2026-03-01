@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -24,6 +25,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'visitor_token',
+        'visits_count',
+        'last_visited_at',
+        'ip_address',
+        'user_agent',
     ];
 
     /**
@@ -44,8 +50,14 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'  => 'datetime',
+            'password'           => 'hashed',
+            'last_visited_at'    => 'datetime',
         ];
+    }
+
+    public function analytics(): HasMany
+    {
+        return $this->hasMany(Analytics::class, 'user_id');
     }
 }

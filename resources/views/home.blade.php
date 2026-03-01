@@ -10,6 +10,25 @@
 
 </head>
 <body>
+<div id="blackhole-bg"></div>
+
+<header class="top-nav">
+    <div class="brand">
+        <div class="brand-mark">
+            <span>AI</span>
+        </div>
+        <div class="brand-text">
+            <div class="brand-title">Doc Insight</div>
+            <div class="brand-subtitle">Upload → OCR → OpenAI summary</div>
+        </div>
+    </div>
+
+    <div class="nav-pill">
+        <div class="nav-dot"></div>
+        <span>Secure processing · Private by design</span>
+    </div>
+</header>
+
 <div class="page">
     <div id="loadingOverlay" class="overlay hidden" aria-hidden="true">
         <video
@@ -24,23 +43,15 @@
         </video>
     </div>
 
-    <!-- Top nav -->
-    <header class="top-nav">
-        <div class="brand">
-            <div class="brand-mark">
-                <span>AI</span>
-            </div>
-            <div class="brand-text">
-                <div class="brand-title">Doc Insight</div>
-                <div class="brand-subtitle">Upload → OCR → OpenAI summary</div>
-            </div>
+    @if ($messages = session('errors'))
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($messages as $message)
+                    <li>{{ $message }}</li>
+                @endforeach
+            </ul>
         </div>
-
-        <div class="nav-pill">
-            <div class="nav-dot"></div>
-            <span>Secure processing · Private by design</span>
-        </div>
-    </header>
+    @endif
 
     <main class="main">
         <!-- Upload & form -->
@@ -184,14 +195,16 @@
             </div>
         </section>
     </main>
-
-    <footer class="page-footer">
-        Built for OCR + OpenAI
-    </footer>
 </div>
+
+<footer class="page-footer">
+    Built for OCR + OpenAI by wwlada
+</footer>
 
 
 <script type="module" src="{{ asset('js/label-changer.js') }}"></script>
 <script type="module" src="{{ asset('js/summarize-document.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="{{ asset('js/blackhole.js') }}"></script>
 </body>
 </html>

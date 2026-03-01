@@ -195,7 +195,7 @@ class FileToTextService
 
     private function getAvgResponseTime(): float
     {
-        return Analytics::avg('response_time');
+        return round(Analytics::avg('response_time'), 2);
     }
 
     private function lastTimeProcessed(): DateTime

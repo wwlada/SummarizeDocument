@@ -21,7 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const fileInput = document.getElementById('document');
-        const fileName = fileInput?.files?.[0]?.name ?? 'Uploaded document';
+        if(fileInput.files.length === 0){
+            showError('You need to upload a document first.')
+            return
+        }
+        const fileName = fileInput?.files?.[0].name ?? 'Uploaded document';
 
         loadingVideo.play?.();
         loadingOverlay.classList.remove('hidden');
@@ -31,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
+                    'X-CSRF-TOKEN': token,
                 },
                 body: formData
             });
@@ -70,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function showError(message) {
         document.getElementById('summary-title').textContent = 'Error';
         document.getElementById('summary-status').textContent = 'Failed';
-        document.getElementById('summary-updated-at').textContent = new Date().toLocaleTimeString();
 
         const body = document.getElementById('summary-body');
         body.innerHTML = '';

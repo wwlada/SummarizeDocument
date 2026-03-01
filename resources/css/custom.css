@@ -1,10 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
 /* ══════════════════════════════════════════
    TOKENS
 ══════════════════════════════════════════ */
 :root {
-    --bg:         #f4f5f7;
+    --bg:         #080b12;
     --surface:    #ffffff;
     --surface-lo: #f9fafb;
 
@@ -36,7 +34,11 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-    min-height: 100svh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
     font-family: 'Space Grotesk', system-ui, sans-serif;
     font-size: 14px;
     line-height: 1.6;
@@ -44,21 +46,29 @@ body {
     background-color: var(--bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+}
+
+#blackhole-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
 }
 
 /* ══════════════════════════════════════════
    PAGE
 ══════════════════════════════════════════ */
 .page {
+    flex: 1;
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 48px 64px;
+    padding: 0 48px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
     gap: 32px;
-    min-height: 100svh;
+    overflow-y: auto;
 }
 
 /* ══════════════════════════════════════════
@@ -69,7 +79,8 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px 0;
+    width: 100%;
+    padding: 16px 48px;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -149,7 +160,6 @@ body {
    MAIN GRID
 ══════════════════════════════════════════ */
 .main {
-    flex: 1;
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
     gap: 28px;
@@ -173,12 +183,12 @@ body {
     overflow: hidden;
 }
 
-/* Amber top stripe on upload panel */
-.panel:first-of-type::before {
+/* Amber top stripe on both panels */
+.panel::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 5px;
     background: linear-gradient(90deg, var(--amber) 0%, var(--amber-lt) 100%);
 }
 
@@ -600,11 +610,13 @@ input[type="file"] {
    PAGE FOOTER
 ══════════════════════════════════════════ */
 .page-footer {
-    padding: 20px 0 8px;
+    width: 100%;
+    padding: 12px 48px;
     text-align: center;
     font-size: 12px;
-    color: var(--tx-dim);
+    color: var(--amber);
     border-top: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 .page-footer a { color: var(--amber); text-decoration: none; }
