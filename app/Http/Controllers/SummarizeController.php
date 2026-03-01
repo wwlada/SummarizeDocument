@@ -8,13 +8,14 @@ use Illuminate\Http\JsonResponse;
 
 class SummarizeController extends Controller
 {
-    public function summarizeDocument(SummarizeDataRequest $request, FileToTextService $fileToTextService): JsonResponse
+    public function summarizeDocument(SummarizeDataRequest $request, FileToTextService $fileToTextService,): JsonResponse
     {
-        $validated = $request->validated();
-        $text = $fileToTextService->filePath($validated['document'])->handleDocument();
+        $aiSummary = $fileToTextService->filePath($request->validated('document'))->handleDocument();
 
-        dd($text);
-
-        return response()->json([]);
+        return response()->json([
+            'aiSummary'         => $aiSummary->response,
+            'avgResponseTime'   => $aiSummary->avgResponseTime,
+            'lastTimeProcessed' => $aiSummary->lastTimeProcessed->format('Y-m-d H:i:s'),
+        ]);
     }
 }

@@ -3,8 +3,12 @@
 namespace App\Service;
 
 use App\Ai\Agents\PdfTextAndImageSummarizer;
+use App\DTO\responseDTO;
 use App\Enum\MimesEnum;
+use App\Models\Analytics;
+use DateTime;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Ai\Files;
 
 class FileToTextService
@@ -12,9 +16,12 @@ class FileToTextService
     public function __construct(
         private string $filePath = '',
         private string $ext = '',
+        private int    $inputTokens = 0,
+        private int    $outputTokens = 0,
+        private float  $startTime = 0,
     ){}
 
-    public function handleDocument(): string
+    public function handleDocument(): responseDTO
     {
         $filePath = $this->filePath;
 
@@ -34,31 +41,83 @@ class FileToTextService
         }
     }
 
-    private function summarizeText($text): string
+    private function summarizeText($text): responseDTO
     {
-        return PdfTextAndImageSummarizer::make()->prompt(
+        $raw = PdfTextAndImageSummarizer::make()->prompt(
             prompt: $text
         );
-    }
+        $this->tokensUsed(raw: $raw);
+        $this->saveData();
 
-    private function summarizePdfImage(): string
-    {
-        return PdfTextAndImageSummarizer::make()->prompt(
-            prompt:      '',
-            attachments: [ Files\Document::fromPath($this->filePath) ],
+        return responseDTO::aiResponse(
+            response:          $this->decodeAiResponse($raw),
+            inputTokens:       $this->inputTokens,
+            outputTokens:      $this->outputTokens,
+            avgResponseTime:   $this->getAvgResponseTime(),
+            lastTimeProcessed: $this->lastTimeProcessed()
         );
     }
 
-    private function summarizeImage(): string
+    private function summarizePdfImage(): responseDTO
     {
-        return PdfTextAndImageSummarizer::make()->prompt(
+        $raw = PdfTextAndImageSummarizer::make()
+            ->prompt(
+                prompt:      '',
+                attachments: [ Files\Document::fromPath($this->filePath) ],
+        );
+        $this->tokensUsed(raw: $raw);
+        $this->saveData();
+
+        return responseDTO::aiResponse(
+            response:          $this->decodeAiResponse($raw),
+            inputTokens:       $this->inputTokens,
+            outputTokens:      $this->outputTokens,
+            avgResponseTime:   $this->getAvgResponseTime(),
+            lastTimeProcessed: $this->lastTimeProcessed()
+        );
+    }
+
+    private function summarizeImage(): responseDTO
+    {
+        $raw = PdfTextAndImageSummarizer::make()->prompt(
             prompt:      '',
             attachments: [ Files\Image::fromPath($this->filePath) ],
         );
+        $this->tokensUsed(raw: $raw);
+        $this->saveData();
+
+        return responseDTO::aiResponse(
+            response:          $this->decodeAiResponse($raw),
+            inputTokens:       $this->inputTokens,
+            outputTokens:      $this->outputTokens,
+            avgResponseTime:   $this->getAvgResponseTime(),
+            lastTimeProcessed: $this->lastTimeProcessed()
+        );
+    }
+
+    private function tokensUsed(object $raw): void
+    {
+        $this->inputTokens  += $raw->usage->promptTokens;
+        $this->outputTokens += $raw->usage->completionTokens;
+    }
+
+    private function decodeAiResponse(string $response): array
+    {
+        $cleaned = preg_replace('/^"""\s*|\s*"""$/', '', trim($response));
+        $decoded = json_decode($cleaned, true);
+
+        if (!is_array($decoded) || !isset($decoded['language'], $decoded['body'])) {
+            throw new \RuntimeException('Invalid AI response format');
+        }
+
+        return $decoded;
     }
 
     public function filePath(UploadedFile $document): FileToTextService
     {
+        $startTime = microtime(true);
+        $this->startTime = $startTime;
+
         $mime = $document->getMimeType();
         $this->ext = MimesEnum::shortFromMime($mime) ?? 'unknown';
 
@@ -71,7 +130,7 @@ class FileToTextService
         return $this;
     }
 
-    public function handlePdf(): string
+    public function handlePdf(): responseDTO
     {
         $normalText = $this->extractTextFromPdf($this->filePath);
         if ($normalText) return $this->summarizeText(text:$normalText);
@@ -79,15 +138,15 @@ class FileToTextService
         return $this->summarizePdfImage();
     }
 
-    public function handleOfficeDoc(): string
+    public function handleOfficeDoc(): responseDTO|null
     {
         $cmd = sprintf('pandoc %s -t plain -o - 2>&1', escapeshellarg($this->filePath));
         exec($cmd, $output, $result_code);
 
         $textRaw = implode("\n", $output);
-        $text = trim($textRaw);
+        $text    = trim($textRaw);
 
-        if ($result_code !== 0 || $text === '') return "Could not extract text.";
+        if ($result_code !== 0 || $text === '') return null;
 
         return $this->summarizeText($text);
     }
@@ -121,5 +180,26 @@ class FileToTextService
         return ($result_code === 0)
             && (mb_strlen($normOneLine, 'UTF-8') >= 200)
             && ($shortRatio < 0.5);
+    }
+
+    private function saveData(): void
+    {
+        Analytics::create([
+            'user_id'       => Auth::id(),
+            'input_tokens'  => $this->inputTokens,
+            'output_tokens' => $this->outputTokens,
+            'total_tokens'  => $this->inputTokens + $this->outputTokens,
+            'response_time' => microtime(true) - $this->startTime,
+        ]);
+    }
+
+    private function getAvgResponseTime(): float
+    {
+        return Analytics::avg('response_time');
+    }
+
+    private function lastTimeProcessed(): DateTime
+    {
+        return Analytics::latest()->first()->created_at;
     }
 }

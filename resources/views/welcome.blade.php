@@ -126,7 +126,6 @@
                 </div>
 
 
-
                 <!-- Footer -->
                 <div class="panel-footer">
                     <button type="button"
@@ -157,8 +156,7 @@
                                 No document processed yet
                             </div>
                             <div class="summary-meta">
-                                <span class="pill-soft">Length: — pages</span>
-                                <span class="pill-soft">Language: —</span>
+                                <span class="pill-soft">Language:&nbsp;<span id="languageOutputSpan">---</span></span>
                                 <span class="pill-soft pill-soft--ready" id="summary-status">
                                     Waiting for upload
                                 </span>
@@ -182,8 +180,8 @@
                     </div>
 
                     <div class="summary-footer">
-                        <span>Last processed: <span id="summary-updated-at">—</span></span>
-                        <span>Avg. response: ~ a few seconds (depending on file size)</span>
+                        <span>Last processed: <span id="summary-updated-at">{{$lastTimeProcessed}}</span></span>
+                        <span>Average response: <span id="avgResponseTimeSpan">{{$avgResponseTime}}</span> seconds.</span>
                     </div>
                 </div>
             </div>
