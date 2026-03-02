@@ -62,10 +62,9 @@ body {
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 0 48px;
+    padding: 28px 48px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: stretch;
     gap: 32px;
     overflow-y: auto;
@@ -80,7 +79,7 @@ body {
     justify-content: space-between;
     gap: 16px;
     width: 100%;
-    padding: 16px 48px;
+    padding: 10px 48px;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -649,14 +648,14 @@ input[type="file"] {
    RESPONSIVE ≤ 1280px
 ══════════════════════════════════════════ */
 @media (max-width: 1280px) {
-    .page  { padding: 0 36px 56px; }
+    .page  { padding: 24px 36px; }
 }
 
 /* ══════════════════════════════════════════
    RESPONSIVE ≤ 1024px
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
-    .page  { padding: 0 24px 48px; gap: 24px; }
+    .page  { padding: 20px 24px; gap: 24px; }
     .panel { padding: 28px 24px; gap: 20px; }
     .panel-title { font-size: 22px; }
     .dropzone { padding: 28px 22px; }
@@ -674,13 +673,13 @@ input[type="file"] {
    RESPONSIVE ≤ 640px
 ══════════════════════════════════════════ */
 @media (max-width: 640px) {
-    .page { padding: 0 12px 28px; gap: 14px; }
-    .top-nav { padding: 14px 0; }
-    .panel { padding: 18px 16px; gap: 16px; border-radius: var(--r); }
-    .panel-title { font-size: 19px; }
-    .dropzone { padding: 20px 16px; gap: 14px; }
+    .page { padding: 14px 12px; gap: 12px; }
+    .top-nav { padding: 8px 16px; }
+    .panel { padding: 16px 14px; gap: 14px; border-radius: var(--r); }
+    .panel-title { font-size: 18px; }
+    .dropzone { padding: 18px 14px; gap: 12px; }
     .dropzone-chip-row { display: none; }
-    .dropzone-icon { width: 42px; height: 42px; }
+    .dropzone-icon { width: 40px; height: 40px; }
     .panel-footer { flex-direction: column; align-items: stretch; }
     #summarize-button { width: 100%; justify-content: center; padding: 11px 20px; }
     .summary-footer { flex-direction: column; align-items: flex-start; gap: 4px; }
@@ -692,6 +691,6 @@ input[type="file"] {
 ══════════════════════════════════════════ */
 @media (max-width: 400px) {
     .nav-pill { display: none; }
-    .panel { padding: 16px 14px; }
+    .panel { padding: 14px 12px; }
     .dropzone-icon { display: none; }
 }
