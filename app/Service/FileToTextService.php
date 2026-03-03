@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Ai\Agents\PdfTextAndImageSummarizer;
 use App\DTO\responseDTO;
 use App\Enum\MimesEnum;
+use App\Jobs\ClearStorageJob;
 use App\Models\Analytics;
 use DateTime;
 use Illuminate\Http\UploadedFile;
@@ -122,10 +123,9 @@ class FileToTextService
         $this->ext = MimesEnum::shortFromMime($mime) ?? 'unknown';
 
         $path = $document->store(path:'rawDocuments', options:'local');
-        $this->filePath = storage_path(path:'app/private/'.$path);
-
-        $outDir = storage_path(path:'app/private/ocrImage');
-        if (!is_dir($outDir)) { mkdir($outDir, permissions:0755, recursive:true); }
+        $filePath = storage_path(path:'app/private/'.$path);
+        ClearStorageJob::dispatch($filePath)->delay(now()->addMinutes(2));
+        $this->filePath = $filePath;
 
         return $this;
     }
