@@ -9,7 +9,8 @@ class SummarizeDataRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document' => ['required', 'file', 'mimes:pdf,txt,doc,docx,rtf,md,jpg,jpeg,png,tiff,bmp', 'max:2048'],
+            'document'    => ['required', 'file', 'mimes:pdf,txt,doc,docx,rtf,md,jpg,jpeg,png,tiff,bmp', 'max:2048'],
+            'user_prompt' => ['nullable', 'string', 'max:500'],
         ];
     }
 

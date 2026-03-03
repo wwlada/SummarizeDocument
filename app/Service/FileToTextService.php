@@ -17,6 +17,7 @@ class FileToTextService
     public function __construct(
         private string $filePath = '',
         private string $ext = '',
+        private string $userPrompt = '',
         private int    $inputTokens = 0,
         private int    $outputTokens = 0,
         private float  $startTime = 0,
@@ -44,8 +45,12 @@ class FileToTextService
 
     private function summarizeText($text): responseDTO
     {
+        $prompt = $this->userPrompt !== ''
+            ? $text . "\n\nUser instruction: " . $this->userPrompt
+            : $text;
+
         $raw = PdfTextAndImageSummarizer::make()->prompt(
-            prompt: $text
+            prompt: $prompt
         );
         $this->tokensUsed(raw: $raw);
         $this->saveData();
@@ -63,7 +68,7 @@ class FileToTextService
     {
         $raw = PdfTextAndImageSummarizer::make()
             ->prompt(
-                prompt:      '',
+                prompt:      $this->userPrompt,
                 attachments: [ Files\Document::fromPath($this->filePath) ],
         );
         $this->tokensUsed(raw: $raw);
@@ -81,7 +86,7 @@ class FileToTextService
     private function summarizeImage(): responseDTO
     {
         $raw = PdfTextAndImageSummarizer::make()->prompt(
-            prompt:      '',
+            prompt:      $this->userPrompt,
             attachments: [ Files\Image::fromPath($this->filePath) ],
         );
         $this->tokensUsed(raw: $raw);
@@ -126,6 +131,13 @@ class FileToTextService
         $filePath = storage_path(path:'app/private/'.$path);
         ClearStorageJob::dispatch($filePath)->delay(now()->addMinutes(2));
         $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    public function userPrompt(?string $prompt): FileToTextService
+    {
+        $this->userPrompt = trim($prompt ?? '');
 
         return $this;
     }

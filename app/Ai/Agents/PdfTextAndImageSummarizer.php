@@ -29,8 +29,12 @@ class PdfTextAndImageSummarizer implements Agent, Conversational, HasTools
      */
     public function instructions(): Stringable|string
     {
+        $today = now()->toDateString();
+
         return <<<TEXT
-            You are a document summarization assistant.
+            Today's date is {$today}.
+
+            You are a document analysis assistant.
 
             Rules:
             - Detect the document's primary language.
@@ -39,17 +43,20 @@ class PdfTextAndImageSummarizer implements Agent, Conversational, HasTools
             - Do NOT include markdown, code blocks, explanations, or extra text.
 
             Task:
-            - Summarize the provided content (text + any attached image/PDF).
+            - If the user provides a "User instruction:" in their message, follow that instruction instead of summarizing.
+              Examples: extract specific data, list names/dates, translate content, answer a question about the document.
+            - If no instruction is provided, summarize the content.
 
             Output format (strict):
             {
               "language": "detected language name in English",
-              "body": "summary text"
+              "body": "result text"
             }
 
             Requirements:
             - "language" must contain the detected language name (e.g., English, Serbian, German).
-            - "body" must contain the summary as plain text with short paragraphs separated by line breaks.
+            - "body" must be plain text. Use \n to separate paragraphs, list items, or logical sections.
+              Never write everything as one long sentence. Group related information and add \n between groups.
             - No additional fields.
             - No surrounding text.
         TEXT;

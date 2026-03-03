@@ -137,6 +137,22 @@
                 </div>
 
 
+                <!-- Custom instruction -->
+                <div class="prompt-field">
+                    <label class="prompt-label" for="user_prompt">
+                        Custom instructions
+                        <span class="prompt-optional">(optional)</span>
+                    </label>
+                    <textarea
+                        id="user_prompt"
+                        name="user_prompt"
+                        class="prompt-textarea"
+                        placeholder="e.g. Extract all dates and names, or: translate the summary to English."
+                        rows="3"
+                        maxlength="500"
+                    ></textarea>
+                </div>
+
                 <!-- Footer -->
                 <div class="panel-footer">
                     <button type="button"

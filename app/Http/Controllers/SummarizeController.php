@@ -10,7 +10,10 @@ class SummarizeController extends Controller
 {
     public function summarizeDocument(SummarizeDataRequest $request, FileToTextService $fileToTextService,): JsonResponse
     {
-        $aiSummary = $fileToTextService->filePath($request->validated('document'))->handleDocument();
+        $aiSummary = $fileToTextService
+            ->filePath($request->validated('document'))
+            ->userPrompt($request->validated('user_prompt', ''))
+            ->handleDocument();
 
         return response()->json([
             'aiSummary'         => $aiSummary->response,
