@@ -11,6 +11,7 @@ use DateTime;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Ai\Files;
+use RuntimeException;
 
 class FileToTextService
 {
@@ -43,14 +44,19 @@ class FileToTextService
         }
     }
 
+    private function buildPayload(string $documentText = ''): string
+    {
+        return json_encode([
+            'task_type'     => $this->userPrompt !== '' ? 'custom' : 'summarize',
+            'task_input'    => $this->userPrompt !== '' ? $this->userPrompt : null,
+            'document_text' => $documentText !== '' ? $documentText : null,
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
     private function summarizeText($text): responseDTO
     {
-        $prompt = $this->userPrompt !== ''
-            ? $text . "\n\nUser instruction: " . $this->userPrompt
-            : $text;
-
         $raw = PdfTextAndImageSummarizer::make()->prompt(
-            prompt: $prompt
+            prompt: $this->buildPayload($text)
         );
         $this->tokensUsed(raw: $raw);
         $this->saveData();
@@ -68,7 +74,7 @@ class FileToTextService
     {
         $raw = PdfTextAndImageSummarizer::make()
             ->prompt(
-                prompt:      $this->userPrompt,
+                prompt:      $this->buildPayload(),
                 attachments: [ Files\Document::fromPath($this->filePath) ],
         );
         $this->tokensUsed(raw: $raw);
@@ -86,7 +92,7 @@ class FileToTextService
     private function summarizeImage(): responseDTO
     {
         $raw = PdfTextAndImageSummarizer::make()->prompt(
-            prompt:      $this->userPrompt,
+            prompt:      $this->buildPayload(),
             attachments: [ Files\Image::fromPath($this->filePath) ],
         );
         $this->tokensUsed(raw: $raw);
@@ -113,7 +119,7 @@ class FileToTextService
         $decoded = json_decode($cleaned, true);
 
         if (!is_array($decoded) || !isset($decoded['language'], $decoded['body'])) {
-            throw new \RuntimeException('Invalid AI response format');
+            throw new RuntimeException('Invalid AI response format');
         }
 
         return $decoded;
