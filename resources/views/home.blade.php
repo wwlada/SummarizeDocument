@@ -29,6 +29,7 @@
     </div>
 </header>
 
+<div class="scroll-wrap">
 <div class="page">
     <div id="loadingOverlay" class="overlay hidden" aria-hidden="true">
         <video
@@ -216,6 +217,7 @@
 <footer class="page-footer">
     Built for OCR + OpenAI by wwlada
 </footer>
+</div>
 
 
 <script type="module" src="{{ asset('js/label-changer.js') }}"></script>
