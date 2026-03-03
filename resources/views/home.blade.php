@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <meta property="og:title" content="Doc Insight – AI Document Summarizer">
+    <meta property="og:description" content="Upload a PDF or image and get an AI-generated summary instantly.">
+    <meta property="og:image" content="{{ asset('og_image/ai_file_summarizer_og.webp') }}">
+    <meta property="og:type" content="website">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
